@@ -43,7 +43,7 @@ int main()
     std::mt19937 l_gen(l_rd()); // seed the generator
     std::uniform_int_distribution<> l_xDistr(l_particleRadius * 4.0f, l_windowWidth - l_particleRadius * 4.0f); // define the range
     std::uniform_int_distribution<> l_yDistr(l_particleRadius * 4.0f, l_windowHeight - l_particleRadius * 4.0f); // define the range
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 500; ++i)
     {
         l_particles.emplace_back(sf::Vector2f(l_xDistr(l_gen), l_yDistr(l_gen)), l_particleRadius);
     }

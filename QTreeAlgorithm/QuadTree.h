@@ -22,6 +22,7 @@ namespace McRenderer
             m_shape.setFillColor(sf::Color::Transparent);
             m_shape.setOutlineThickness(l_thickness);
             m_shape.setOutlineColor(sf::Color::Red);
+            m_isDivided = false;
         }
 
         void insert(const Particle& p_particle)
@@ -66,6 +67,18 @@ namespace McRenderer
                     m_rightDown = std::make_unique<QuadTree>(l_rightDownBounds, 4);
                 }
                 m_rightDown->insert(p_particle);
+
+                if (!m_isDivided)
+                {
+                    for (const auto& particle : m_particles)
+                    {
+                        m_leftDown->insert(particle);
+                        m_leftUp->insert(particle);
+                        m_rightUp->insert(particle);
+                        m_rightDown->insert(particle);
+                    }
+                    m_isDivided = true;
+                }
             }
         }
 
@@ -97,6 +110,7 @@ namespace McRenderer
 
         Bounds m_bounds;
         int m_threshlod;
+        bool m_isDivided;
 
         std::unique_ptr<QuadTree> m_leftDown;
         std::unique_ptr<QuadTree> m_leftUp;
