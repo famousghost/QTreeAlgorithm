@@ -138,14 +138,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bounds.cpp" />
     <ClCompile Include="GameWindow.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="Transformations.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bounds.h" />
     <ClInclude Include="GameWindow.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Transformations.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
