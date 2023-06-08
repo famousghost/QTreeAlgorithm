@@ -70,14 +70,34 @@ namespace McRenderer
 
                 if (!m_isDivided)
                 {
-                    for (const auto& particle : m_particles)
-                    {
-                        m_leftDown->insert(particle);
-                        m_leftUp->insert(particle);
-                        m_rightUp->insert(particle);
-                        m_rightDown->insert(particle);
-                    }
                     m_isDivided = true;
+                }
+            }
+        }
+
+        void getAllIntersectingPoints(const Bounds& p_bound, std::vector<Particle>& p_particles, int& p_counter)
+        {
+            if (!m_bounds.intersectionWithOtherBound(p_bound))
+            {
+                return;
+            }
+            else
+            {
+                for (const auto& l_particle : m_particles)
+                {
+                    p_counter++;
+                    if (p_bound.contains(l_particle))
+                    {
+                        p_particles.push_back(l_particle);
+                    }
+                }
+
+                if (m_isDivided)
+                {
+                    m_leftDown->getAllIntersectingPoints(p_bound, p_particles, p_counter);
+                    m_leftUp->getAllIntersectingPoints(p_bound, p_particles, p_counter);
+                    m_rightUp->getAllIntersectingPoints(p_bound, p_particles, p_counter);
+                    m_rightDown->getAllIntersectingPoints(p_bound, p_particles, p_counter);
                 }
             }
         }

@@ -22,14 +22,15 @@ namespace McRenderer
             m_size = p_size;
         }
 
-        bool contains(const Particle& p_particle)
+        bool contains(const Particle& p_particle) const
         {
-            sf::Vector2f l_closestPoint = calculateClosestPoint(p_particle);
-            float dist = Transformations::distance(l_closestPoint, p_particle.m_position);
-            return dist < p_particle.m_radius;
+            return p_particle.m_position.x >= m_position.x - m_size.x
+                && p_particle.m_position.x <= m_position.x + m_size.x
+                && p_particle.m_position.y >= m_position.y - m_size.y
+                && p_particle.m_position.y <= m_position.y + m_size.y;
         }
 
-        sf::Vector2f calculateClosestPoint(const Particle& p_particle)
+        sf::Vector2f calculateClosestPoint(const Particle& p_particle) const
         {
             float x = p_particle.m_position.x;
             float y = p_particle.m_position.y;
@@ -57,6 +58,14 @@ namespace McRenderer
             }
 
             return sf::Vector2f(x, y);
+        }
+
+        bool intersectionWithOtherBound(const Bounds& p_bounds) const
+        {
+            return (p_bounds.m_position.x - p_bounds.m_size.x) < (m_position.x + m_size.x)
+                && (p_bounds.m_position.x + p_bounds.m_size.x) > (m_position.x - m_size.x)
+                && (p_bounds.m_position.y - p_bounds.m_size.y) < (m_position.y + m_size.y)
+                && (p_bounds.m_position.y + p_bounds.m_size.y) > (m_position.y - m_size.y);
         }
     };
 }//McRenderer

@@ -11,6 +11,8 @@ namespace McRenderer
 
         static double distance(sf::Vector2f p_vec1, sf::Vector2f p_vec2);
 
+        static double distanceSQR(sf::Vector2f p_vec1, sf::Vector2f p_vec2);
+
         static double normalization(double value, double min, double max);
 
         static double clamp(double value, double min, double max);

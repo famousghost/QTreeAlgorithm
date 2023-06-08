@@ -21,6 +21,12 @@ namespace McRenderer
             + (p_vec2.y - p_vec1.y) * (p_vec2.y - p_vec1.y));
     }
 
+    double Transformations::distanceSQR(sf::Vector2f p_vec1, sf::Vector2f p_vec2)
+    {
+        return ((p_vec2.x - p_vec1.x) * (p_vec2.x - p_vec1.x)
+            + (p_vec2.y - p_vec1.y) * (p_vec2.y - p_vec1.y));
+    }
+
     double Transformations::normalization(double value, double min, double max)
     {
         return clamp((value - min) / (max - min), 0.0, 1.0);
