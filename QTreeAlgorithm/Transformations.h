@@ -21,6 +21,8 @@ namespace McRenderer
 
         static double length(sf::Vector2f a);
 
+        static double lengthSQR(sf::Vector2f a);
+
         static double dot(sf::Vector2f a, sf::Vector2f b);
 
         static double castToVector(sf::Vector2f a, sf::Vector2f b);

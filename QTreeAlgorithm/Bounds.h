@@ -70,8 +70,8 @@ namespace McRenderer
 
         bool intersectionWithCircleBound(const Bounds& p_bounds) const
         {
-            auto dist = Transformations::distance(m_position, p_bounds.m_position);
-            return dist <= (m_size.x + p_bounds.m_size.x);
+            auto dist = Transformations::distanceSQR(m_position, p_bounds.m_position);
+            return dist <= ((m_size.x + p_bounds.m_size.x) * (m_size.x + p_bounds.m_size.x));
         }
     };
 }//McRenderer

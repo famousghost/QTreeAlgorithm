@@ -55,6 +55,11 @@ namespace McRenderer
         return std::sqrt(a.x * a.x + a.y * a.y);
     }
 
+    double Transformations::lengthSQR(sf::Vector2f a)
+    {
+        return std::sqrt(a.x * a.x + a.y * a.y);
+    }
+
     double Transformations::dot(sf::Vector2f a, sf::Vector2f b)
     {
         return a.x * b.x + a.y * b.y;

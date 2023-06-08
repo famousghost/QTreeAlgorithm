@@ -39,9 +39,10 @@ int main()
     l_circleShape.setRadius(l_particle.m_radius);
     l_circleShape.setFillColor(sf::Color::White);
 
+    float l_radius = 2.0f;
     sf::CircleShape l_closestPoint;
     l_closestPoint.setPosition(sf::Vector2f(l_windowHeight / 2, l_windowHeight / 2));
-    l_closestPoint.setRadius(2.0f);
+    l_closestPoint.setRadius(l_radius);
     l_closestPoint.setFillColor(sf::Color::Green);
 
     float l_particleRadius = 2.0f;
@@ -59,8 +60,8 @@ int main()
     sf::CircleShape particleShape;
     sf::RectangleShape l_checkBoundsShape;
 
-    float l_friction = 0.9997f;
-    sf::Vector2f l_acceleration(0.0f, 100.0f);
+    float l_friction = 0.997f;
+    sf::Vector2f l_acceleration(0.0f, 10.0f);
 
     std::vector<Particle> l_intersectionParticles;
     l_intersectionParticles.resize(PARTICLES_COUNT);
@@ -75,6 +76,7 @@ int main()
 
         int l_counter = 0;
 
+#if QTREE
         QuadTree l_quadTree(l_bounds, 4);
         for (const auto& particle : l_particles)
         {
@@ -83,8 +85,15 @@ int main()
 #if DRAW_QTREE
         l_quadTree.draw(m_window);
 #endif
+#endif
 
-        for (int i = 0; i < PARTICLES_COUNT; ++i)
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            auto mousePos = sf::Mouse::getPosition(m_window);
+            l_particles.emplace_back(sf::Vector2f(mousePos.x, mousePos.y), l_particleRadius);
+        }
+
+        for (int i = 0; i < l_particles.size(); ++i)
         {
             auto& p = l_particles[i];
 
@@ -110,7 +119,7 @@ int main()
             }
 
 #if QTREE
-            Bounds l_particleBound(p.m_position, sf::Vector2f(p.m_radius + 1.0f, p.m_radius + 1.0f));
+            Bounds l_particleBound(p.m_position, sf::Vector2f(p.m_radius * 2.0f, p.m_radius * 2.0f));
             l_quadTree.getAllIntersectingPoints(l_particleBound, l_intersectionParticles, l_counter);
             for (const auto& particle : l_intersectionParticles)
             {
@@ -120,12 +129,12 @@ int main()
                 {
                     continue;
                 }
-
+#if !DEBUG
                 p.m_velocity += dir;
                 p.m_velocity *= l_friction;
+#endif
             }
 #else
-
             //inefficent way to calculate collisions
             for (auto& particle : l_particles)
             {
@@ -136,15 +145,17 @@ int main()
                 {
                     continue;
                 }
-
+#if !DEBUG
                 p.m_velocity += dir;
                 p.m_velocity *= l_friction;
+#endif
             }
 #endif
-
+#if !DEBUG
             p.m_velocity += (l_acceleration * l_deltaTime);
             p.m_velocity *= l_friction;
             p.update(l_deltaTime);
+#endif
 
             particleShape.setPosition(p.m_position.x, p.m_position.y);
             particleShape.setFillColor(sf::Color::White);

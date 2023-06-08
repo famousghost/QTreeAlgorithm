@@ -27,10 +27,11 @@ namespace McRenderer
 
         sf::Vector2f Particle::collision(const Particle& point)
         {
-            auto distance = Transformations::distanceSQR(m_position, point.m_position);
+            sf::Vector2f dir = m_position - point.m_position;
+            auto distance = Transformations::length(dir);
             if (distance <= (m_radius + point.m_radius) * (m_radius + point.m_radius))
             {
-                return m_position - point.m_position;
+                return dir;
             }
             return sf::Vector2f();
         }

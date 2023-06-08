@@ -31,12 +31,13 @@ namespace McRenderer
             {
                 return;
             }
-            if (m_particles.size() < m_threshlod && !m_isDivided)
+            if (m_particles.size() < m_threshlod)
             {
                 m_particles.push_back(p_particle);
             }
             else
             {
+                m_isDivided = true;
                 auto l_leftDownBounds = Bounds(m_bounds.m_position + sf::Vector2f(-m_bounds.m_size.x * 0.5f, m_bounds.m_size.y * 0.5f), m_bounds.m_size * 0.5f);
 
                 if (m_leftDown == nullptr)
@@ -67,18 +68,6 @@ namespace McRenderer
                     m_rightDown = std::make_unique<QuadTree>(l_rightDownBounds, m_threshlod);
                 }
                 m_rightDown->insert(p_particle);
-                if (!m_isDivided)
-                {
-                    for (auto& particle : m_particles)
-                    {
-                        m_leftDown->insert(particle);
-                        m_leftUp->insert(particle);
-                        m_rightDown->insert(particle);
-                        m_rightUp->insert(particle);
-                    }
-                    //m_particles.clear();
-                    m_isDivided = true;
-                }
             }
         }
 
