@@ -67,5 +67,11 @@ namespace McRenderer
                 && (p_bounds.m_position.y - p_bounds.m_size.y) < (m_position.y + m_size.y)
                 && (p_bounds.m_position.y + p_bounds.m_size.y) > (m_position.y - m_size.y);
         }
+
+        bool intersectionWithCircleBound(const Bounds& p_bounds) const
+        {
+            auto dist = Transformations::distance(m_position, p_bounds.m_position);
+            return dist <= (m_size.x + p_bounds.m_size.x);
+        }
     };
 }//McRenderer

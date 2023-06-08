@@ -13,7 +13,7 @@
 #define DEBUG 0
 #define FPS 1
 
-#define PARTICLES_COUNT 1000
+#define PARTICLES_COUNT 500
 
 int main()
 {
@@ -44,7 +44,7 @@ int main()
     l_closestPoint.setRadius(2.0f);
     l_closestPoint.setFillColor(sf::Color::Green);
 
-    float l_particleRadius = 6.0f;
+    float l_particleRadius = 2.0f;
     std::vector<Particle> l_particles;
     std::random_device l_rd; // obtain a random number from hardware
     std::mt19937 l_gen(l_rd()); // seed the generator
@@ -61,6 +61,9 @@ int main()
 
     float l_friction = 0.9997f;
     sf::Vector2f l_acceleration(0.0f, 100.0f);
+
+    std::vector<Particle> l_intersectionParticles;
+    l_intersectionParticles.resize(PARTICLES_COUNT);
     while (m_window.isOpen())
     {
         sf::Time l_elapsed = clock.getElapsedTime();
@@ -69,8 +72,6 @@ int main()
         l_currentTime = l_elapsed.asSeconds();
         float l_deltaTime = l_currentTime - l_prevTime;
         m_window.clear();
-
-        std::vector<Particle> l_intersectionParticles;
 
         int l_counter = 0;
 
@@ -109,11 +110,9 @@ int main()
             }
 
 #if QTREE
-            //float t = clock.getElapsedTime().asSeconds();
-            //efficent way to calculate collisions
-            Bounds l_particleBound(p.m_position, sf::Vector2f(p.m_radius * 2.0f, p.m_radius * 2.0f));
+            Bounds l_particleBound(p.m_position, sf::Vector2f(p.m_radius + 1.0f, p.m_radius + 1.0f));
             l_quadTree.getAllIntersectingPoints(l_particleBound, l_intersectionParticles, l_counter);
-            for (auto& particle : l_intersectionParticles)
+            for (const auto& particle : l_intersectionParticles)
             {
                 auto dir = p.collision(particle);
 
@@ -125,11 +124,9 @@ int main()
                 p.m_velocity += dir;
                 p.m_velocity *= l_friction;
             }
-            //std::cout << clock.getElapsedTime().asSeconds() - t << "\n";
 #else
 
             //inefficent way to calculate collisions
-            //float t = clock.getElapsedTime().asSeconds();
             for (auto& particle : l_particles)
             {
                 l_counter++;
@@ -143,7 +140,6 @@ int main()
                 p.m_velocity += dir;
                 p.m_velocity *= l_friction;
             }
-            //std::cout << clock.getElapsedTime().asSeconds() - t << "\n";
 #endif
 
             p.m_velocity += (l_acceleration * l_deltaTime);
@@ -155,11 +151,31 @@ int main()
             particleShape.setRadius(p.m_radius);
             m_window.draw(particleShape);
         }
+
 #if DEBUG
-        std::cout << l_counter << "\n";
+        auto mousePos = sf::Mouse::getPosition(m_window);
+        std::vector<Particle> l_debugPartciles;
+        Bounds l_particleBoundDebug(sf::Vector2f(mousePos.x, mousePos.y), sf::Vector2f(100.0f, 100.0f));
+        l_quadTree.getAllIntersectingPoints(l_particleBoundDebug, l_debugPartciles, l_counter);
+
+        for (auto& particle : l_debugPartciles)
+        {
+            particleShape.setPosition(particle.m_position.x, particle.m_position.y);
+            particleShape.setFillColor(sf::Color::Green);
+            particleShape.setRadius(particle.m_radius);
+            m_window.draw(particleShape);
+        }
+
+        l_checkBoundsShape.setPosition(l_particleBoundDebug.m_position - l_particleBoundDebug.m_size);
+        l_checkBoundsShape.setSize(l_particleBoundDebug.m_size * 2.0f);
+        l_checkBoundsShape.setFillColor(sf::Color::Transparent);
+        l_checkBoundsShape.setOutlineThickness(1.0f);
+        l_checkBoundsShape.setOutlineColor(sf::Color::Green);
+        m_window.draw(l_checkBoundsShape);
 #endif
 
         m_window.display();
+        l_intersectionParticles.clear();
 
 #if FPS
         float fps = 1.f / l_deltaTime;

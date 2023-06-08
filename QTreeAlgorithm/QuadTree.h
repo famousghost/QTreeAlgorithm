@@ -31,7 +31,7 @@ namespace McRenderer
             {
                 return;
             }
-            if (m_particles.size() < m_threshlod)
+            if (m_particles.size() < m_threshlod && !m_isDivided)
             {
                 m_particles.push_back(p_particle);
             }
@@ -41,7 +41,7 @@ namespace McRenderer
 
                 if (m_leftDown == nullptr)
                 {
-                    m_leftDown = std::make_unique<QuadTree>(l_leftDownBounds, 4);
+                    m_leftDown = std::make_unique<QuadTree>(l_leftDownBounds, m_threshlod);
                 }
                 m_leftDown->insert(p_particle);
 
@@ -49,7 +49,7 @@ namespace McRenderer
 
                 if (m_leftUp == nullptr)
                 {
-                    m_leftUp = std::make_unique<QuadTree>(l_leftUpBounds, 4);
+                    m_leftUp = std::make_unique<QuadTree>(l_leftUpBounds, m_threshlod);
                 }
                 m_leftUp->insert(p_particle);
 
@@ -57,19 +57,26 @@ namespace McRenderer
 
                 if (m_rightUp == nullptr)
                 {
-                    m_rightUp = std::make_unique<QuadTree>(l_rightUpBounds, 4);
+                    m_rightUp = std::make_unique<QuadTree>(l_rightUpBounds, m_threshlod);
                 }
                 m_rightUp->insert(p_particle);
 
                 auto l_rightDownBounds = Bounds(m_bounds.m_position + m_bounds.m_size * 0.5f, m_bounds.m_size * 0.5f);
                 if (m_rightDown == nullptr)
                 {
-                    m_rightDown = std::make_unique<QuadTree>(l_rightDownBounds, 4);
+                    m_rightDown = std::make_unique<QuadTree>(l_rightDownBounds, m_threshlod);
                 }
                 m_rightDown->insert(p_particle);
-
                 if (!m_isDivided)
                 {
+                    for (auto& particle : m_particles)
+                    {
+                        m_leftDown->insert(particle);
+                        m_leftUp->insert(particle);
+                        m_rightDown->insert(particle);
+                        m_rightUp->insert(particle);
+                    }
+                    //m_particles.clear();
                     m_isDivided = true;
                 }
             }
@@ -77,7 +84,7 @@ namespace McRenderer
 
         void getAllIntersectingPoints(const Bounds& p_bound, std::vector<Particle>& p_particles, int& p_counter)
         {
-            if (!m_bounds.intersectionWithOtherBound(p_bound))
+            if (!m_bounds.intersectionWithCircleBound(p_bound))
             {
                 return;
             }
